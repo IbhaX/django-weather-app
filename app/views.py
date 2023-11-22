@@ -20,8 +20,19 @@ class HomeView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         # Retrieve the latest weather data for each unique city for the current user
-        subquery = Current.objects.filter(user=self.request.user, location_id=OuterRef('location_id')).values('location_id').annotate(max_last_updated=Max('last_updated')).values('max_last_updated')
-        unique_cities = Current.objects.filter(user=self.request.user, last_updated__in=subquery)
+        unique_cities_subquery = (
+            Current.objects
+            .filter(location__user=self.request.user, location_id=OuterRef('location_id'))
+            .order_by('-last_updated')
+            .values('id')[:1]
+        )
+
+        unique_cities = (
+            Current.objects
+            .filter(id__in=Subquery(unique_cities_subquery))
+            .select_related('location')  # Assuming location is a ForeignKey in Current model
+        )
+
         return unique_cities
 
     def get_context_data(self, **kwargs):
@@ -40,8 +51,20 @@ class HomeView(LoginRequiredMixin, ListView):
 
         return self.get(request, *args, **kwargs)
 
+class ClearDataView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        Location.objects.filter(user=request.user).delete()
+        messages.success(request, "Weather data cleared successfully")
+        return redirect(reverse('app:home'))
 
-def clear_data(request):
-    Current.objects.filter(user=request.user).delete()
-    messages.success(request, "Weather data cleared successfully")
-    return redirect(reverse('app:home'))
+
+class RefreshDataView(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        # Perform the data refresh logic here
+        # For example, you might want to retrieve the latest data for all saved cities
+        saved_cities = Location.objects.filter(user=request.user)
+        for city in saved_cities:
+            save_weather_data(city.name, request.user, aqi=True)
+
+        messages.success(request, "Weather data refreshed successfully")
+        return redirect(reverse('app:home'))

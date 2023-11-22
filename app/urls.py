@@ -5,5 +5,6 @@ app_name = "app"
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name="home"),
-    path('clear/', views.clear_data, name='clear_data'),
+    path('clear/', views.ClearDataView.as_view(), name='clear_data'),
+    path('refresh/', views.RefreshDataView.as_view(), name='refresh_data'), 
 ]

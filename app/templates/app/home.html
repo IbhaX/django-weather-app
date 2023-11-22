@@ -16,10 +16,14 @@
         </div>
       </form>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3 d-flex">
+      <form method="post" action="{% url 'app:refresh_data' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Refresh Data</button>
+      </form>
       <form method="post" action="{% url 'app:clear_data' %}">
         {% csrf_token %}
-        <button type="submit" class="btn btn-danger">Clear Data</button>
+        <button type="submit" class="btn btn-danger ms-3">Clear Data</button>
       </form>
     </div>
   </div>
@@ -35,11 +39,17 @@
                 <img src="{{ weather.condition_icon }}" alt="Weather Icon" class="mr-2">
               </h3>
             </div>
-            <p><strong>Last Updated:</strong> {{ weather.location.created_at }}</p>
+            <p><strong>Last Updated:</strong> {{ weather.last_updated }}</p>
             <p><strong>Temperature:</strong> {{ weather.temp_c }}°C</p>
             <p><strong>Condition:</strong> {{ weather.condition_text }}</p>
             <p><strong>Wind Speed:</strong> {{ weather.wind_kph }} kph</p>
             <p><strong>Humidity:</strong> {{ weather.humidity }}%</p>
+            <p><strong>Pressure (mb):</strong> {{ weather.pressure_mb }}</p>
+            <p><strong>Precipitation (mm):</strong> {{ weather.precip_mm }}</p>
+            <p><strong>Visibility (km):</strong> {{ weather.vis_km }}</p>
+            <p><strong>UV Index:</strong> {{ weather.uv }}</p>
+            <p><strong>Gust Speed:</strong> {{ weather.gust_kph }} kph</p>
+            <p><strong>Cloud Coverage:</strong> {{ weather.cloud }}%</p>
             <!-- Add other fields as needed -->
           </div>
         </div>

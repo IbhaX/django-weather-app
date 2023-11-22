@@ -12,9 +12,23 @@ class Location(models.Model):
     localtime_epoch = models.BigIntegerField()
     localtime = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self) -> str:
         return self.name
+
+
+
+class AirQuality(models.Model):
+    co = models.FloatField(blank=True, null=True)
+    no2 = models.FloatField(blank=True, null=True)
+    o3 = models.FloatField(blank=True, null=True)
+    so2 = models.FloatField(blank=True, null=True)
+    pm2_5 = models.FloatField(blank=True, null=True)
+    pm10 = models.FloatField(blank=True, null=True)
+    us_epa_index = models.IntegerField(blank=True, null=True)
+    gb_defra_index = models.IntegerField(blank=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Current(models.Model):
     location = models.ForeignKey(Location, on_delete=models.CASCADE)
@@ -43,16 +57,9 @@ class Current(models.Model):
     uv = models.FloatField()
     gust_mph = models.FloatField()
     gust_kph = models.FloatField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    air_quality = models.ForeignKey(AirQuality, on_delete=models.CASCADE, blank=True, null=True)
     
-
-class AirQuality(models.Model):
-    co = models.FloatField(blank=True, null=True)
-    no2 = models.FloatField(blank=True, null=True)
-    o3 = models.FloatField(blank=True, null=True)
-    so2 = models.FloatField(blank=True, null=True)
-    pm2_5 = models.FloatField(blank=True, null=True)
-    pm10 = models.FloatField(blank=True, null=True)
-    us_epa_index = models.IntegerField(blank=True, null=True)
-    gb_defra_index = models.IntegerField(blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.location.name
+    
+    

@@ -27,11 +27,12 @@ def user_login(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             user = authenticate(request, username=username, password=password)
+
             if user:
                 login(request, user)
                 messages.success(request, "Successfully Logged in")
-                print(f"Logged in {user}")
-                return redirect("home")
+                next_url = request.GET.get("next", "home")
+                return redirect(next_url)
             else:
                 form.add_error('username', 'Invalid username or password.')
     else:

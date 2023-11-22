@@ -7,6 +7,7 @@ JAZZMIN_SETTINGS = {
 
     "topmenu_links": [
         {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
+        {"name": "App",  "url": "home", "permissions": ["auth.view_user"]},
         {"name": "Developer", "url": "https://ibhax.github.io", "new_window": False},
         {"model": "auth.User"},
         {"app": "index"},
