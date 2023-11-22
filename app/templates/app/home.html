@@ -1,0 +1,52 @@
+{% extends 'index/base.html' %}
+
+{% block content %}
+<div class="container mt-5 mb-5 text-center">
+  <h2 class="mb-4">Weather App</h2>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-8">
+      <form method="post" action="{% url 'app:home' %}">
+        {% csrf_token %}
+        <div class="input-group">
+          {{ form.city_name }}
+          <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-4">
+      <form method="post" action="{% url 'app:clear_data' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Clear Data</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    {% for weather in weather_data %}
+      <div class="col-md-4">
+        <div class="card shadow mt-3">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <h3>
+                {{ weather.location.name }}
+                <img src="{{ weather.condition_icon }}" alt="Weather Icon" class="mr-2">
+              </h3>
+            </div>
+            <p><strong>Last Updated:</strong> {{ weather.location.created_at }}</p>
+            <p><strong>Temperature:</strong> {{ weather.temp_c }}°C</p>
+            <p><strong>Condition:</strong> {{ weather.condition_text }}</p>
+            <p><strong>Wind Speed:</strong> {{ weather.wind_kph }} kph</p>
+            <p><strong>Humidity:</strong> {{ weather.humidity }}%</p>
+            <!-- Add other fields as needed -->
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <p class="col-md-8 mt-3">No weather data available.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
