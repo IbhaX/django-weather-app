@@ -45,10 +45,10 @@ class HomeView(LoginRequiredMixin, ListView):
 
         if form.is_valid():
             city = form.cleaned_data.get("city_name")
-            save_weather_data(city, request.user, aqi=True)
-            messages.success(request, "Data saved to database")
-            print("Data saved")
-
+            if save_weather_data(city, request.user, aqi=True):
+                messages.success(request, "Data saved to database")
+            else:
+                messages.error(request, "City not found")
         return self.get(request, *args, **kwargs)
 
 class ClearDataView(LoginRequiredMixin, View):
